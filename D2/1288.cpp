@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector> 
 #include <algorithm>
 
 using namespace std;
@@ -7,44 +8,36 @@ int main(void)
 {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
+
     int tc;
     cin >> tc;
+    string grade[10] = {"A+", "A0" , "A-", "B+", "B0", "B-", "C+", "C0", "C-", "D0"};
     for (int t = 1; t <= tc; t++)
     {
-        int n;
-        bool numbers[10];
-        fill(numbers, numbers + 10, false); // 있으면 트루로 변경.
-        cin >> n; // 시작 숫자
-        int cur_n = n; // 나눠가면서 판별할 숫자
-        int cur_ans = cur_n; // 답 출력할 수
-        while (true)
+        int n, k; // n : 학생 수  k: 학생 번호
+        cin >> n >> k;
+        vector<int> student_score; // 순위만 매기면 되니까 굳이 정확한 점수를 낼 필요가 없음
+        for(int i = 0; i < n; i++)
         {
-            cur_ans = cur_n; 
-            // cur_n을 나눠주며 numbers에 삽입
-            while (cur_n >= 10) // cur_n이 한자리 수로 되면 탈출
-            {
-                // 15 / 10 = 몫:1, 나머지 : 5
-                // 135 / 10 = 몫 : 13, 나머지 : 5
-                numbers[cur_n % 10] = true; // numbers[나머지]를 트루로
-                cur_n = cur_n / 10;
-            }
-            numbers[cur_n] = true; // 1의자리 수 true로 만들어주고 넘어감
-
-            bool breakpoint = true;
-            for (int i = 0; i < 10; i++)
-            {
-                if (numbers[i] == false)
-                {
-                    breakpoint = false;
-                }
-            }
-            if (breakpoint == true) // 답이 나온경우
-            {
-                cout << '#' << t << " " << cur_ans << "\n";
-                break;
-            }
-            cur_n = cur_ans + n;
+            int midterm, finalexam, homework;
+            cin >> midterm >> finalexam >> homework;
+            int sum = midterm * 35 + finalexam * 45 + homework * 20;
+            student_score.push_back(sum); // n번째 학생 점수 삽입
         }
+        // ------ 여기까지 학생들 점수 벡터에 다 삽입됨. ------- 
+        int cur_number = student_score[k-1];
+        sort(student_score.begin(), student_score.end(), greater<int>());
+        int rank;
+        for(int i = 0; i < student_score.size(); i++)
+        {
+            if(student_score[i] == cur_number)
+            {
+                rank = i + 1; // 몇등인지
+            }
+        }
+        //현재 rank는 몇등인지 알려줌.
+        cout << '#' << t << " " << grade[(rank - 1) / (n / 10)] << "\n";
     }
+
     return 0;
 }
